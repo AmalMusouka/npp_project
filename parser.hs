@@ -1,8 +1,8 @@
-module Grammar where
+module Parser where
 
-import Data.Char  (isUpper, isSpace)
+import Data.Char (isSpace)
 
-type Symbol     = String
+type Symbol = String
 type Production = (Symbol, [Symbol])
 
 data Grammar = Grammar
@@ -41,8 +41,8 @@ parseGrammar input =
   let nonEmpty = filter (not . null . trim) (lines input)
       parsed   = map parseProduction nonEmpty
   in case sequence parsed of
-       Nothing            -> Left "Parse error: malformed production"
-       Just []            -> Left "Empty grammar"
+       Nothing              -> Left "Parse error: malformed production"
+       Just []              -> Left "Empty grammar"
        Just prods@((s,_):_) -> Right $ Grammar s prods
 
 prettyGrammar :: Grammar -> String
