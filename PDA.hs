@@ -4,25 +4,22 @@ import Data.Char (isUpper)
 import Parser
 
 data Config = Config
-  { remaining :: String
-  , stack     :: [Symbol]
-  , history   :: [String]
+  { remaining  :: String
+  , stack      :: [Symbol]
+  , derivation :: [String]
   } deriving (Show, Eq, Ord)
 
-sententialForm :: Config -> String
-sententialForm c = unwords (stack c)
-
 applyProduction :: Grammar -> Config -> [Config]
-applyProduction g (Config inp (top:rest) hist)
+applyProduction g (Config inp (top:rest) deriv)
   | isUpper (head top) =
-      [ Config inp (rhs ++ rest) (hist ++ [unwords (rhs ++ rest)])
+      [ Config inp (rhs ++ rest) (deriv ++ [top ++ "->" ++ concat rhs])
       | (lhs, rhs) <- productions g, lhs == top ]
-applyProduction _ _ = []
+applyProduction _ _ = [] -- when stack is empty
 
 matchTerminal :: Config -> [Config]
-matchTerminal (Config (i:inp) (top:rest) hist)
+matchTerminal (Config (i:inp) (top:rest) deriv)
   | not (isUpper (head top)) && [i] == top =
-      [Config inp rest (hist ++ [inp])]
+      [Config inp rest deriv]
 matchTerminal _ = []
 
 step :: Grammar -> Config -> [Config]

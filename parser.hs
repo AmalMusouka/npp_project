@@ -13,19 +13,19 @@ data Grammar = Grammar
 splitOnArrow :: String -> Maybe (String, String)
 splitOnArrow [] = Nothing
 splitOnArrow ('-':'>':rest) = Just ("", rest)
-splitOnArrow (c:cs) =
-  case splitOnArrow cs of
-    Just (l, r) -> Just (c:l, r)
-    Nothing     -> Nothing
+splitOnArrow (x:xs) =
+  case splitOnArrow xs of
+    Just (l, r) -> Just (x : l, r)
+    Nothing -> Nothing
 
 trim :: String -> String
 trim = reverse . dropWhile isSpace . reverse . dropWhile isSpace
 
 parseRHS :: String -> [Symbol]
 parseRHS [] = []
-parseRHS (c:cs)
-  | isSpace c = parseRHS cs
-  | otherwise = [c] : parseRHS cs
+parseRHS (x : xs)
+  | isSpace x = parseRHS xs
+  | otherwise = [x] : parseRHS xs
 
 parseProduction :: String -> Maybe Production
 parseProduction line =
@@ -41,10 +41,11 @@ parseGrammar input =
   let nonEmpty = filter (not . null . trim) (lines input)
       parsed   = map parseProduction nonEmpty
   in case sequence parsed of
-       Nothing              -> Left "Parse error: malformed production"
-       Just []              -> Left "Empty grammar"
+       Nothing -> Left "Parse error: malformed production"
+       Just [] -> Left "Empty grammar"
        Just prods@((s,_):_) -> Right $ Grammar s prods
 
+-- to give a cleaner output
 prettyGrammar :: Grammar -> String
 prettyGrammar g = unlines $ map prettyProd (productions g)
   where
