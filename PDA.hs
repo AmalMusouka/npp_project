@@ -10,16 +10,16 @@ data Config = Config
   } deriving (Show, Eq, Ord)
 
 applyProduction :: Grammar -> Config -> [Config]
-applyProduction g (Config inp (top:rest) deriv)
+applyProduction g (Config input (top : rest) deriv)
   | isUpper (head top) =
-      [ Config inp (rhs ++ rest) (deriv ++ [top ++ "->" ++ concat rhs])
+      [ Config input (rhs ++ rest) (deriv ++ [top ++ "->" ++ concat rhs])
       | (lhs, rhs) <- productions g, lhs == top ]
 applyProduction _ _ = [] -- when stack is empty
 
 matchTerminal :: Config -> [Config]
-matchTerminal (Config (i:inp) (top:rest) deriv)
+matchTerminal (Config (i : input) (top : rest) deriv)
   | not (isUpper (head top)) && [i] == top =
-      [Config inp rest deriv]
+      [Config input rest deriv]
 matchTerminal _ = []
 
 step :: Grammar -> Config -> [Config]
