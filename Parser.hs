@@ -30,7 +30,7 @@ parseRHS (x : xs)
 parseProduction :: String -> Maybe Production
 parseProduction line =
   case splitOnArrow line of
-    Nothing     -> Nothing
+    Nothing -> Nothing
     Just (l, r) ->
       let lhs = trim l
           rhs = parseRHS (trim r)
@@ -39,7 +39,7 @@ parseProduction line =
 parseGrammar :: String -> Either String Grammar
 parseGrammar input =
   let nonEmpty = filter (not . null . trim) (lines input)
-      parsed   = map parseProduction nonEmpty
+      parsed = map parseProduction nonEmpty
   in case sequence parsed of
        Nothing -> Left "Parse error: malformed production"
        Just [] -> Left "Empty grammar"
