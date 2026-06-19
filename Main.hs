@@ -2,7 +2,7 @@ module Main where
 
 import System.Environment (getArgs)
 import Parser
-import BFS
+import Search
 
 main :: IO ()
 main = do
@@ -15,8 +15,8 @@ main = do
         Right g  -> do
           putStr "Enter string: "
           input <- getLine
-          case bfs g input of
-            Nothing    -> putStrLn "No Match"
+          case search g input of
+            Nothing -> putStrLn "No Match"
             Just steps -> do
               mapM_ putStrLn steps
               putStrLn "Match"
