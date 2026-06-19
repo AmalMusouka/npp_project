@@ -2,7 +2,7 @@ module Parser where
 
 import Data.Char (isSpace)
 
-type Symbol = String
+type Symbol = Char
 type Production = (Symbol, [Symbol])
 
 data Grammar = Grammar
@@ -25,7 +25,7 @@ parseRHS :: String -> [Symbol]
 parseRHS [] = []
 parseRHS (x : xs)
   | isSpace x = parseRHS xs
-  | otherwise = [x] : parseRHS xs
+  | otherwise = x : parseRHS xs
 
 parseProduction :: String -> Maybe Production
 parseProduction line =
@@ -34,7 +34,9 @@ parseProduction line =
     Just (l, r) ->
       let lhs = trim l
           rhs = parseRHS (trim r)
-      in if null lhs then Nothing else Just (lhs, rhs)
+      in case lhs of
+          [c] -> Just (c, rhs)
+          _ -> Nothing
 
 parseGrammar :: String -> Either String Grammar
 parseGrammar input =
@@ -49,4 +51,4 @@ parseGrammar input =
 prettyGrammar :: Grammar -> String
 prettyGrammar g = unlines $ map prettyProd (productions g)
   where
-    prettyProd (lhs, rhs) = lhs ++ " -> " ++ unwords rhs
+    prettyProd (lhs, rhs) = lhs : " -> " ++ rhs

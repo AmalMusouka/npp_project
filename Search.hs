@@ -31,7 +31,7 @@ isAccepted c = null (remaining c) && null (stack c)
 search :: Grammar -> String -> Maybe [String]
 search g input = go queue visited
   where
-    initial = Config input [start g] [start g]
+    initial = Config input [start g] [[start g]]
     queue = insert (priority initial) Nil
     visited = Set.singleton (configKey initial)
 

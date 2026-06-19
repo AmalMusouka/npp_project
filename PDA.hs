@@ -11,14 +11,14 @@ data Config = Config
 
 applyProduction :: Grammar -> Config -> [Config]
 applyProduction g (Config input (top : rest) deriv)
-  | isUpper (head top) =
-      [ Config input (rhs ++ rest) (deriv ++ [top ++ "->" ++ concat rhs])
+  | isUpper top =
+      [ Config input (rhs ++ rest) (deriv ++ [[lhs] ++ "->" ++ rhs])
       | (lhs, rhs) <- productions g, lhs == top ]
 applyProduction _ _ = [] -- when stack is empty
 
 matchTerminal :: Config -> [Config]
 matchTerminal (Config (i : input) (top : rest) deriv)
-  | not (isUpper (head top)) && [i] == top =
+  | not (isUpper top) && i == top =
       [Config input rest deriv]
 matchTerminal _ = []
 
